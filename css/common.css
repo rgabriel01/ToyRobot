@@ -1,0 +1,26 @@
+.p50 {
+  padding: 50px;
+}
+
+td {
+  height: 70px;
+  width: 50px;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.north {
+  background-image: url("../images/north.png");
+}
+
+.south {
+  background-image: url("../images/south.png");
+}
+
+.west {
+  background-image: url("../images/west.png");
+}
+
+.east {
+  background-image: url("../images/east.png");
+}

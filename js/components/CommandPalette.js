@@ -17,7 +17,10 @@ function CommandPalette(props) {
         />
       </div>
       <div className='row mb8'>
-        <Generic name='Move'/>
+        <Generic
+          name='Move'
+          clickHandler={props.moveCommandClickHandler}
+        />
       </div>
       <div className='row mb8'>
         <Generic name='Left'/>

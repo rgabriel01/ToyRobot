@@ -27,10 +27,10 @@ function Place(props) {
         </div>
         <div className='col-xs-8'>
           <select className="form-control input-orientation">
-            <option value='N'>NORTH</option>
-            <option value='S'>SOUTH</option>
-            <option value='E'>EAST</option>
-            <option value='W'>WEST</option>
+            <option value='north'>NORTH</option>
+            <option value='south'>SOUTH</option>
+            <option value='east'>EAST</option>
+            <option value='west'>WEST</option>
           </select>
         </div>
       </div>

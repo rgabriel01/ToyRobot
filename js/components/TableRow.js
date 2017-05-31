@@ -15,7 +15,7 @@ function TableRow(props) {
     for (let column = 0; column < columns; column++ ) {
       let isRobotOnCurrentColumn = robotCurrentColumnPosition === column
       let doesRobotSitOnThisCell = isRobotOnCurrentColumn && isRobotOnCurrentRow
-      let robotPlaceholderClass = doesRobotSitOnThisCell ? getOrientationName() : ''
+      let robotPlaceholderClass = doesRobotSitOnThisCell ? props.orientation : ''
       generatedColumns.push(
         <TableCell
           key={`colKey-${column}`}
@@ -25,25 +25,6 @@ function TableRow(props) {
       )
     }
     return generatedColumns
-
-    function getOrientationName() {
-      let orientation = ''
-      switch(props.orientation) {
-        case 'N':
-          orientation = 'north'
-          break;
-        case 'S':
-          orientation = 'south'
-          break;
-        case 'W':
-          orientation = 'west'
-          break;
-        case 'E':
-          orientation = 'east'
-          break;
-      }
-      return orientation
-    }
   }
 
 }

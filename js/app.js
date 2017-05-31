@@ -7,7 +7,7 @@ class Main extends React.Component {
     super(props)
     this.state = {
       robot: {
-        orientation: 'N',
+        orientation: 'north',
         rowNumber: 0,
         columnNumber: 0
       }
@@ -16,14 +16,26 @@ class Main extends React.Component {
   }
 
   place(x,y,f) {
-    debugger
+    let newCoordinates = evalAndPrepCoordinates.bind(this)(x, y, f)
     this.setState({
       robot: {
         orientation: f,
-        rowNumber: x,
-        columnNumber: y
+        rowNumber: newCoordinates.newYAxisValue,
+        columnNumber: newCoordinates.newXAxisValue
       }
     })
+
+    function evalAndPrepCoordinates(updatingXAxisValue, updatingYAxisValue){
+      let rowsMaxValue = this.props.rows - 1
+      let columnsMaxValue = this.props.columns - 1
+      let newXAxisValue = (updatingXAxisValue > columnsMaxValue) ? this.state.robot.columnNumber : updatingXAxisValue
+      let newYAxisValue = (updatingYAxisValue > rowsMaxValue) ? this.state.robot.rowNumber : updatingYAxisValue
+      return {
+        newXAxisValue: newXAxisValue,
+        newYAxisValue: newYAxisValue
+      }
+    }
+
   }
 
   render() {
@@ -36,7 +48,7 @@ class Main extends React.Component {
         </div>
         <div className='col-xs-6'>
           <Table
-            tableDimension={{rows: 5, columns: 5}}
+            tableDimension={{rows: this.props.rows, columns: this.props.columns}}
             robot={this.state.robot}
           />
         </div>
@@ -45,4 +57,10 @@ class Main extends React.Component {
   }
 }
 
-ReactDOM.render(<Main />, document.getElementById('root'));
+ReactDOM.render(
+  <Main
+    rows={5}
+    columns={5}
+  />
+  , document.getElementById('root')
+);

@@ -24,6 +24,7 @@ function Table(props) {
           robotCurrentColumnPosition={columnNumber}
           columns={columns}
           orientation={orientation}
+          yAxisIndex={row}
         />
       )
     }

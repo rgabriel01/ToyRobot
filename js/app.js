@@ -28,8 +28,8 @@ class Main extends React.Component {
     function evalAndPrepCoordinates(updatingXAxisValue, updatingYAxisValue){
       let rowsMaxValue = this.props.rows - 1
       let columnsMaxValue = this.props.columns - 1
-      let newXAxisValue = (updatingXAxisValue > columnsMaxValue) ? this.state.robot.columnNumber : updatingXAxisValue
-      let newYAxisValue = (updatingYAxisValue > rowsMaxValue) ? this.state.robot.rowNumber : updatingYAxisValue
+      let newXAxisValue = (updatingXAxisValue > columnsMaxValue) ? columnsMaxValue : updatingXAxisValue
+      let newYAxisValue = (updatingYAxisValue > rowsMaxValue) ? rowsMaxValue : updatingYAxisValue
       return {
         newXAxisValue: newXAxisValue,
         newYAxisValue: newYAxisValue

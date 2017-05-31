@@ -21,6 +21,8 @@ function TableRow(props) {
           key={`colKey-${column}`}
           robotPlaceholderClass={robotPlaceholderClass}
           orientation={orientation}
+          yAxisIndex={props.yAxisIndex}
+          xAxisIndex={column}
         />
       )
     }

@@ -21,13 +21,19 @@ class Main extends React.Component {
     this.renderReport = this.renderReport.bind(this)
     this.updateRealtimeState = this.updateRealtimeState.bind(this)
     this.renderSpooledCommandsList = this.renderSpooledCommandsList.bind(this)
-    //realtime events
+    //master events
     this.place = this.place.bind(this)
     this.move = this.move.bind(this)
     this.rotate = this.rotate.bind(this)
-    this.left = this.left.bind(this)
-    this.right = this.right.bind(this)
     this.report = this.report.bind(this)
+
+    //realtime events
+    this.placeRealtimeEvent = this.placeRealtimeEvent.bind(this)
+    this.moveRealTimeEvent = this.moveRealTimeEvent.bind(this)
+    this.leftRealTimeEvent = this.leftRealTimeEvent.bind(this)
+    this.rightRealTimeEvent = this.rightRealTimeEvent.bind(this)
+    this.reportRealTimeEvent = this.reportRealTimeEvent.bind(this)
+
     //spooled commands
     this.addPlaceToSpool = this.addPlaceToSpool.bind(this)
     this.addMoveToSpool = this.addMoveToSpool.bind(this)
@@ -43,22 +49,21 @@ class Main extends React.Component {
     this.setState({isRealtime: value})
   }
 
-  place(x,y,f) {
-    let newCoordinates = evalAndPrepCoordinates.bind(this)(x, y, f)
+  place(toyRobot, x,y,f) {
+    let newCoordinates = evalAndPrepCoordinates.bind(toyRobot)(x, y, f)
     let orientationGuideLine = {
       east: 90,
       south: 180,
       west: 270,
       north: 360
     }
-    this.setState({
-      robot: {
-        orientation: f,
-        orientationInDegrees: orientationGuideLine[f],
-        rowNumber: newCoordinates.newYAxisValue,
-        columnNumber: newCoordinates.newXAxisValue
-      }
-    })
+
+    toyRobot.state.robot.orientation = f
+    toyRobot.state.robot.orientationInDegrees = orientationGuideLine[f]
+    toyRobot.state.robot.rowNumber = newCoordinates.newYAxisValue
+    toyRobot.state.robot.columnNumber = newCoordinates.newXAxisValue
+
+    return toyRobot
 
     function evalAndPrepCoordinates(updatingXAxisValue, updatingYAxisValue){
       let rowsMaxValue = this.props.rows - 1
@@ -72,59 +77,76 @@ class Main extends React.Component {
     }
   }
 
-  move() {
-    let state = this.state
+  move(toyRobot) {
     let resultingMovementValue
-    switch(this.state.robot.orientation) {
+    switch(toyRobot.state.robot.orientation) {
       case 'north':
-        resultingMovementValue = state.robot.rowNumber - 1
-        state.robot.rowNumber = (resultingMovementValue < 0) ? state.robot.rowNumber : resultingMovementValue
+        resultingMovementValue = toyRobot.state.robot.rowNumber - 1
+        toyRobot.state.robot.rowNumber = (resultingMovementValue < 0) ? toyRobot.state.robot.rowNumber : resultingMovementValue
         break
       case 'south':
-        resultingMovementValue = state.robot.rowNumber + 1
-        state.robot.rowNumber = (resultingMovementValue > (this.props.rows - 1)) ? state.robot.rowNumber : resultingMovementValue
+        resultingMovementValue = toyRobot.state.robot.rowNumber + 1
+        toyRobot.state.robot.rowNumber = (resultingMovementValue > (toyRobot.props.rows - 1)) ? toyRobot.state.robot.rowNumber : resultingMovementValue
         break
       case 'west':
-        resultingMovementValue = state.robot.columnNumber - 1
-        state.robot.columnNumber = (resultingMovementValue < 0) ? state.robot.columnNumber : resultingMovementValue
+        resultingMovementValue = toyRobot.state.robot.columnNumber - 1
+        toyRobot.state.robot.columnNumber = (resultingMovementValue < 0) ? toyRobot.state.robot.columnNumber : resultingMovementValue
         break
       case 'east':
-        resultingMovementValue = state.robot.columnNumber + 1
-        state.robot.columnNumber = (resultingMovementValue > (this.props.columns - 1)) ? state.robot.columnNumber : resultingMovementValue
+        resultingMovementValue = toyRobot.state.robot.columnNumber + 1
+        toyRobot.state.robot.columnNumber = (resultingMovementValue > (toyRobot.props.columns - 1)) ? toyRobot.state.robot.columnNumber : resultingMovementValue
         break
     }
-    this.setState(state)
+    return toyRobot
   }
 
-  rotate(direction) {
+  rotate(toyRobot, direction) {
     let orientationGuideLine = {
       90: 'east',
       180: 'south',
       270: 'west',
       360: 'north'
     }
-    let currentOrientationDegrees = this.state.robot.orientationInDegrees
+    let currentOrientationDegrees = toyRobot.state.robot.orientationInDegrees
     let newOrientationDegrees
     if (direction === 'left') {
       newOrientationDegrees = ((currentOrientationDegrees - 90) === 0) ? 360 : currentOrientationDegrees - 90
     } else {
       newOrientationDegrees = ((currentOrientationDegrees + 90) > 360) ? 90 : currentOrientationDegrees + 90
     }
-    this.state.robot.orientation = orientationGuideLine[newOrientationDegrees]
-    this.state.robot.orientationInDegrees = newOrientationDegrees
-    this.setState(this.state)
+    toyRobot.state.robot.orientation = orientationGuideLine[newOrientationDegrees]
+    toyRobot.state.robot.orientationInDegrees = newOrientationDegrees
+    return toyRobot
   }
 
-  left() {
-    this.rotate('left')
+  report(toyRobot) {
+    toyRobot.state.isReportVisible = true
+    return toyRobot
   }
 
-  right() {
-    this.rotate('right')
+  placeRealtimeEvent(x,y,f) {
+    let newState = this.place(this, x, y, f)
+    this.setState(newState)
   }
 
-  report() {
-    this.setState({isReportVisible: true})
+  moveRealTimeEvent() {
+    let newState = this.move(this)
+    this.setState(newState)
+  }
+
+  leftRealTimeEvent() {
+    let newState = this.rotate(this, 'left')
+    this.setState(newState)
+  }
+
+  rightRealTimeEvent() {
+    let newState = this.rotate(this, 'right')
+    this.setState(newState)
+  }
+
+  reportRealTimeEvent() {
+    let newState = this.report(this)
+    this.setState(newState)
   }
 
   addPlaceToSpool(x,y,f){
@@ -181,11 +203,11 @@ class Main extends React.Component {
       <div className='row p50'>
         <div className='col-xs-12 col-sm-6'>
           <CommandPalette
-            placeCommandClickHandler={ isRealtime ? this.place : this.addPlaceToSpool}
-            moveCommandClickHandler={ isRealtime ? this.move : this.addMoveToSpool}
-            leftCommandClickHandler={ isRealtime ? this.left : this.addLeftToSpool}
-            rightCommandClickHandler={isRealtime ? this.right : this.addRightToSpool}
-            reportCommandClickHandler={isRealtime ? this.report : this.addReportToSpool}
+            placeCommandClickHandler={ isRealtime ? this.placeRealtimeEvent : this.addPlaceToSpool}
+            moveCommandClickHandler={ isRealtime ? this.moveRealTimeEvent : this.addMoveToSpool}
+            leftCommandClickHandler={ isRealtime ? this.leftRealTimeEvent : this.addLeftToSpool}
+            rightCommandClickHandler={isRealtime ? this.rightRealTimeEvent : this.addRightToSpool}
+            reportCommandClickHandler={isRealtime ? this.reportRealTimeEvent : this.addReportToSpool}
             realtimeCheckboxOnChangeHandler={this.updateRealtimeState}
             isRealtime={this.state.isRealtime}
           />

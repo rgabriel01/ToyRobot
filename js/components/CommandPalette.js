@@ -23,13 +23,22 @@ function CommandPalette(props) {
         />
       </div>
       <div className='row mb8'>
-        <Generic name='Left'/>
+        <Generic
+          name='Left'
+          clickHandler={props.leftCommandClickHandler}
+        />
       </div>
       <div className='row mb8'>
-        <Generic name='Right'/>
+        <Generic
+          name='Right'
+          clickHandler={props.rightCommandClickHandler}
+        />
       </div>
       <div className='row mb8'>
-        <Generic name='Report'/>
+        <Generic
+          name='Report'
+          clickHandler={props.reportCommandClickHandler}
+        />
       </div>
     </div>
   )

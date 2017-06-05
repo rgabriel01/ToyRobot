@@ -8,19 +8,33 @@ class Main extends React.Component {
     this.state = {
       robot: {
         orientation: 'north',
+        orientationInDegrees: 360,
         rowNumber: 0,
         columnNumber: 0
-      }
+      },
+      isReportVisible: false
     }
     this.place = this.place.bind(this)
     this.move = this.move.bind(this)
+    this.rotate = this.rotate.bind(this)
+    this.left = this.left.bind(this)
+    this.right = this.right.bind(this)
+    this.report = this.report.bind(this)
+    this.renderReport = this.renderReport.bind(this)
   }
 
   place(x,y,f) {
     let newCoordinates = evalAndPrepCoordinates.bind(this)(x, y, f)
+    let orientationGuideLine = {
+      east: 90,
+      south: 180,
+      west: 270,
+      north: 360
+    }
     this.setState({
       robot: {
         orientation: f,
+        orientationInDegrees: orientationGuideLine[f],
         rowNumber: newCoordinates.newYAxisValue,
         columnNumber: newCoordinates.newXAxisValue
       }
@@ -62,6 +76,47 @@ class Main extends React.Component {
     this.setState(state)
   }
 
+  rotate(direction) {
+    let orientationGuideLine = {
+      90: 'east',
+      180: 'south',
+      270: 'west',
+      360: 'north'
+    }
+    let currentOrientationDegrees = this.state.robot.orientationInDegrees
+    let newOrientationDegrees
+    if (direction === 'left') {
+      newOrientationDegrees = ((currentOrientationDegrees - 90) === 0) ? 360 : currentOrientationDegrees - 90
+    } else {
+      newOrientationDegrees = ((currentOrientationDegrees + 90) > 360) ? 90 : currentOrientationDegrees + 90
+    }
+    this.state.robot.orientation = orientationGuideLine[newOrientationDegrees]
+    this.state.robot.orientationInDegrees = newOrientationDegrees
+    this.setState(this.state)
+  }
+
+  left() {
+    this.rotate('left')
+  }
+
+  right() {
+    this.rotate('right')
+  }
+
+  report() {
+    this.setState({isReportVisible: true})
+  }
+
+  renderReport() {
+    let {orientation, rowNumber, columnNumber} = this.state.robot
+    let reportVisibilityClass = this.state.isReportVisible ? '' : 'hidden'
+    return (
+      <div className={`alert alert-success ${reportVisibilityClass}`}>
+        {`Robot is at X: ${columnNumber} Y: ${rowNumber}, facing the ${orientation}`}
+      </div>
+    )
+  }
+
   render() {
     return (
       <div className='row p50'>
@@ -69,6 +124,9 @@ class Main extends React.Component {
           <CommandPalette
             placeCommandClickHandler={this.place}
             moveCommandClickHandler={this.move}
+            leftCommandClickHandler={this.left}
+            rightCommandClickHandler={this.right}
+            reportCommandClickHandler={this.report}
           />
         </div>
         <div className='col-xs-12 col-sm-6 table-responsive'>
@@ -76,6 +134,9 @@ class Main extends React.Component {
             tableDimension={{rows: this.props.rows, columns: this.props.columns}}
             robot={this.state.robot}
           />
+        </div>
+        <div className='col-xs-12 col-sm-6 table-responsive'>
+          {this.renderReport()}
         </div>
       </div>
     )

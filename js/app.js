@@ -126,27 +126,27 @@ class Main extends React.Component {
 
   placeRealtimeEvent(x,y,f) {
     let newState = this.place(this, x, y, f)
-    this.setState(newState)
+    this.setState(newState.state)
   }
 
   moveRealTimeEvent() {
     let newState = this.move(this)
-    this.setState(newState)
+    this.setState(newState.state)
   }
 
   leftRealTimeEvent() {
     let newState = this.rotate(this, 'left')
-    this.setState(newState)
+    this.setState(newState.state)
   }
 
   rightRealTimeEvent() {
     let newState = this.rotate(this, 'right')
-    this.setState(newState)
+    this.setState(newState.state)
   }
 
   reportRealTimeEvent() {
     let newState = this.report(this)
-    this.setState(newState)
+    this.setState(newState.state)
   }
 
   addPlaceToSpool(x,y,f){
@@ -180,7 +180,21 @@ class Main extends React.Component {
   }
 
   executeSpooledCommands() {
-    console.log('yolol!')
+    let toyRobot = this
+    let commands = this.state.spooledCommands.slice(0) //clone
+    for (var index in commands) {
+      let command = commands[index]
+      if (command.indexOf('place') === 0) {
+        let coordinates = command.split('-')
+        let xCoordinates = parseInt(coordinates[1])
+        let yCoordinates = parseInt(coordinates[2])
+        let orientation = coordinates[3]
+        toyRobot = this.place(toyRobot, xCoordinates, yCoordinates, orientation)
+      } else if (command.indexOf('move') === 0) {
+        toyRobot = this.move(toyRobot)
+      }
+    }
+    this.setState(toyRobot.state)
   }
 
   renderReport() {

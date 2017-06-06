@@ -1,7 +1,6 @@
 # ToyRobot
 
 ToyRobot is a project that simulates movements of the robot on a grid (5x5).
-It employs usage of reactJs on all of it's events and actions.
 
 ### What can the ToyRobot project do?
 1. able to *place* the toy robot anywhere on the grid as well as where it is facing.

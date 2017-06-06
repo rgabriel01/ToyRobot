@@ -12,6 +12,10 @@ It employs usage of reactJs on all of it's events and actions.
 ### Rules
 1. any movement issued to the ToyRobot should not make it *fall off* the grid
 
+### Screens
+![alt text](./images/realtime.png?raw=true "Optional Title")
+![alt text](./images/spooled.png?raw=true "Optional Title")
+
 ### Tools Used
 1. ReactJS
 2. Bootstrap

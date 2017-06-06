@@ -7,13 +7,16 @@ function CommandPalette(props) {
   return (
     <div>
       <div className='row mb16'>
-        <div className='col-xs-12'>
+        <div className='col-xs-6'>
           <h3 className='m0'>Command Palette</h3>
           <div className='checkbox'>
             <label>
               <input type='checkbox' onChange={props.realtimeCheckboxOnChangeHandler} checked={props.isRealtime}/>Go Realtime?
             </label>
           </div>
+        </div>
+        <div className='col-xs-6'>
+          <button type='button' className='btn btn-default btn-block' onClick={props.resetOnClickHandler}>Reset</button>
         </div>
       </div>
       <div className='row mb8'>

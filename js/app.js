@@ -26,6 +26,7 @@ class Main extends React.Component {
     this.move = this.move.bind(this)
     this.rotate = this.rotate.bind(this)
     this.report = this.report.bind(this)
+    this.reset = this.reset.bind(this)
 
     //realtime events
     this.placeRealtimeEvent = this.placeRealtimeEvent.bind(this)
@@ -124,6 +125,21 @@ class Main extends React.Component {
     return toyRobot
   }
 
+  reset() {
+    this.setState({
+      robot: {
+        orientation: 'north',
+        orientationInDegrees: 360,
+        rowNumber: 0,
+        columnNumber: 0
+      },
+      isReportVisible: false,
+      isRealtime: true,
+      isPlaceCommandPresent: false,
+      spooledCommands:[]
+    })
+  }
+
   placeRealtimeEvent(x,y,f) {
     let newState = this.place(this, x, y, f)
     this.setState(newState.state)
@@ -192,6 +208,12 @@ class Main extends React.Component {
         toyRobot = this.place(toyRobot, xCoordinates, yCoordinates, orientation)
       } else if (command.indexOf('move') === 0) {
         toyRobot = this.move(toyRobot)
+      } else if (command.indexOf('left') === 0) {
+        toyRobot = this.rotate(toyRobot, 'left')
+      } else if (command.indexOf('right') === 0) {
+        toyRobot = this.rotate(toyRobot, 'right')
+      } else {
+        toyRobot = this.report(toyRobot)
       }
     }
     this.setState(toyRobot.state)
@@ -224,6 +246,7 @@ class Main extends React.Component {
             reportCommandClickHandler={isRealtime ? this.reportRealTimeEvent : this.addReportToSpool}
             realtimeCheckboxOnChangeHandler={this.updateRealtimeState}
             isRealtime={this.state.isRealtime}
+            resetOnClickHandler={this.reset}
           />
           {this.renderSpooledCommandsList()}
         </div>
